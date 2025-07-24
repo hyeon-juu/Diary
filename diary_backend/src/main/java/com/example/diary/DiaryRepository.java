@@ -1,6 +1,8 @@
 package com.example.diary;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
-    Diary findByDate(String date);
+    Optional<Diary> findByDate(String date);
 }
