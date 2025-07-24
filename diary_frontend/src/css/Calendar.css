@@ -1,0 +1,25 @@
+.calContainer {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.react-calendar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.react-calendar__month-view__days__day {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  background-color: white;
+  border: 0.1px solid gray;
+}
+.react-calendar__tile--now {
+  background-color: gray;
+}
+.react-calendar__month-view__weekdays__weekday {
+  text-align: center;
+}

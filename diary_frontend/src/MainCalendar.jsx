@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import { useNavigate } from "react-router-dom";
+import "./css/Calendar.css";
 
 function MainCalendar() {
   const [date, setDate] = useState(new Date());
@@ -27,7 +28,7 @@ function MainCalendar() {
   };
 
   return (
-    <div>
+    <div className="calContainer">
       <Calendar onChange={setDate} value={date} onClickDay={dateClickHandler} />
       <button onClick={todayDateHandler}>+</button>
     </div>
