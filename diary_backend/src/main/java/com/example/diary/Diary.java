@@ -10,12 +10,13 @@ import jakarta.persistence.Lob;
 public class Diary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String date;
+    public Long id;
+    public String date;
+    public String title;
+    public String content;
 
     @Lob // 대용량 문자열 저장
-    private String image;
+    public String image;
 
 
     //setter getter
@@ -24,6 +25,20 @@ public class Diary {
     }
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    public String getContent(){
+        return content;
+    }
+    public void setContent(String content){
+        this.content = content;
     }
 
     public String getImage() {

@@ -32,10 +32,10 @@ function MainCalendar() {
         const formatted = formatDate(new Date(d)); // new Date()로 날짜 복제
         promises.push(
           fetch(`http://localhost:8080/api/diary/${formatted}`)
-            .then((res) => (res.ok ? res.text() : null))
+            .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
               if (data) {
-                return { date: formatted, image: data };
+                return { date: formatted, ...data };
               } else return null;
             })
         );
@@ -44,7 +44,12 @@ function MainCalendar() {
       const results = await Promise.all(promises);
       const map = {};
       results.forEach((item) => {
-        if (item) map[item.date] = item.image;
+        if (item)
+          map[item.date] = {
+            image: item.image,
+            title: item.title,
+            content: item.content,
+          };
       });
       setImageMap(map);
     };
@@ -55,12 +60,6 @@ function MainCalendar() {
   // 날짜 클릭 시 → /diary/yyyy-mm-dd/view
   const dateClickHandler = (clickedDate) => {
     const formattedDate = formatDate(clickedDate);
-    navigate(`/diary/${formattedDate}/view`);
-  };
-
-  // + 버튼 클릭 시 → /diary/yyyy-mm-dd/write
-  const todayDateHandler = () => {
-    const formattedDate = formatDate(date);
     navigate(`/diary/${formattedDate}/write`);
   };
 
@@ -72,27 +71,23 @@ function MainCalendar() {
         onClickDay={dateClickHandler}
         tileContent={({ date, view }) => {
           const key = formatDate(date);
-          if (imageMap[key]) {
+          const entry = imageMap[key];
+
+          if (view === "month" && entry) {
             return (
-              <img
-                src={imageMap[key]}
-                alt="thumbnail"
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "4px",
-                  objectFit: "cover",
-                  marginTop: "5px",
-                }}
-              />
+              <div>
+                <img src={entry.image} alt="diary_thumbnail" />
+                <div>{entry.title}</div>
+              </div>
             );
           }
           return null;
         }}
+        formatShortWeekday={(locale, date) =>
+          date.toLocaleDateString("en-US", { weekday: "short" })
+        }
+        // showNeighboringMonth={false}
       />
-      <button onClick={todayDateHandler} className="plusButton">
-        +
-      </button>
     </div>
   );
 }

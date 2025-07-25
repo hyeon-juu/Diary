@@ -1,6 +1,9 @@
+import { useParams } from "react-router-dom";
 import React, { useRef, useEffect, useState } from "react";
 
-function WriteDiary() {
+function Diary() {
+  const { date } = useParams();
+
   const canvasRef = useRef(null);
   const isDrawing = useRef(false);
   const [context, setContext] = useState(null);
@@ -8,6 +11,9 @@ function WriteDiary() {
   const [color, setColor] = useState("#000000");
   const [lineWidth, setLineWidth] = useState(3);
   const [isEraser, setIsEraser] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -57,14 +63,6 @@ function WriteDiary() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  // const saveImage = () => {
-  //   const canvas = canvasRef.current;
-  //   const image = canvas.toDataURL("image/png");
-  //   const link = document.createElement("a");
-  //   link.href = image;
-  //   link.download = "my-diary.png";
-  //   link.click();
-  // };
   const saveImage = () => {
     const canvas = canvasRef.current;
     const base64 = canvas.toDataURL("image/png"); // ex: data:image/png;base64,iVBORw0K...
@@ -75,7 +73,9 @@ function WriteDiary() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        date: "2025-07-24",
+        date,
+        title,
+        content,
         image: base64,
       }),
     })
@@ -86,6 +86,7 @@ function WriteDiary() {
 
   return (
     <div>
+      {date}입니다.
       <div style={{ marginBottom: "10px" }}>
         <label>색상:</label>
         <input
@@ -96,26 +97,17 @@ function WriteDiary() {
             setColor(e.target.value);
           }}
         />
-        <label style={{ marginLeft: "20px" }}>📏 굵기:</label>
+        <label style={{ marginLeft: "20px" }}>굵기:</label>
         <input
           type="range"
-          min="1"
+          min="5"
           max="20"
           value={lineWidth}
           onChange={(e) => setLineWidth(parseInt(e.target.value))}
         />
-        <button
-          onClick={() => setIsEraser(true)}
-          style={{ marginLeft: "20px" }}
-        >
-          지우개
-        </button>
-        <button onClick={clearCanvas} style={{ marginLeft: "10px" }}>
-          다시 그리기
-        </button>
-        <button onClick={saveImage} style={{ marginLeft: "10px" }}>
-          저장하기
-        </button>
+        <button onClick={() => setIsEraser(true)}>지우개</button>
+        <button onClick={clearCanvas}>다시 그리기</button>
+        <button onClick={saveImage}>저장하기</button>
       </div>
       <canvas
         ref={canvasRef}
@@ -125,8 +117,28 @@ function WriteDiary() {
         onMouseLeave={stopDrawing}
         style={{ background: "white", cursor: "crosshair" }}
       />
+      {/* =================================== */}
+      <div style={{ marginBottom: "10px" }}>
+        <label>제목: </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{ width: "300px", marginRight: "10px" }}
+        />
+      </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>내용: </label>
+        <br />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={5}
+          cols={60}
+          style={{ resize: "none" }}
+        />
+      </div>
     </div>
   );
 }
-
-export default WriteDiary;
+export default Diary;
